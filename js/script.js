@@ -87,20 +87,39 @@ const openModal = document.querySelectorAll("[data-modal]"),
   closeModal = document.querySelector("[data-close]"),
   modal = document.querySelector(".modal");
 
+const openModalFunc = () => {
+  modal.style.display = "block";
+  document.body.style.overflow = "hidden";
+  clearInterval(modalTimerId);
+};
+
 const closeModalFunc = (event) => {
-  if (event.code === "Escape" || event.target.closest(".modal__close") || event.target.classList.contains('modal')) {
+  if (
+    (event.code === "Escape" && modal.style.display === "block") ||
+    event.target.closest(".modal__close") ||
+    event.target.classList.contains("modal")
+  ) {
     modal.style.display = "none";
     document.body.style.overflow = "";
   }
 };
 
-openModal.forEach((element) => {
-  element.addEventListener("click", () => {
-    modal.style.display = "block";
-    document.body.style.overflow = 'hidden';
-  });
-});
+const modalTimerId = setTimeout(openModalFunc, 3000);
+const showModalByScroll = () => {
+  if (
+    window.pageYOffset + document.documentElement.clientHeight >=
+    document.documentElement.scrollHeight
+  ) {
+    openModalFunc();
+    window.removeEventListener("scroll", showModalByScroll);
+  }
+};
 
+window.addEventListener("scroll", showModalByScroll);
+
+openModal.forEach((element) =>
+  element.addEventListener("click", openModalFunc)
+);
 closeModal.addEventListener("click", closeModalFunc);
 document.addEventListener("keydown", closeModalFunc);
-modal.addEventListener('click', closeModalFunc);
+modal.addEventListener("click", closeModalFunc);
