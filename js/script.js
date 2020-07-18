@@ -88,23 +88,25 @@ const openModal = document.querySelectorAll("[data-modal]"),
   modal = document.querySelector(".modal");
 
 const openModalFunc = () => {
-  modal.style.display = "block";
+  modal.classList.add("show");
+  modal.classList.remove("hide");
   document.body.style.overflow = "hidden";
   clearInterval(modalTimerId);
 };
 
 const closeModalFunc = (event) => {
   if (
-    (event.code === "Escape" && modal.style.display === "block") ||
+    (event.code === "Escape" && modal.classList.contains("show")) ||
     event.target.closest(".modal__close") ||
     event.target.classList.contains("modal")
   ) {
-    modal.style.display = "none";
+    modal.classList.remove("show");
+    modal.classList.add("hide");
     document.body.style.overflow = "";
   }
 };
 
-// const modalTimerId = setTimeout(openModalFunc, 3000);
+const modalTimerId = setTimeout(openModalFunc, 50000);
 const showModalByScroll = () => {
   if (
     window.pageYOffset + document.documentElement.clientHeight >=
@@ -196,30 +198,29 @@ new MenuCard(
 ).render();
 
 // Form
-const forms = document.querySelectorAll('form');
+const forms = document.querySelectorAll("form");
 const message = {
-  loading: 'загрузка',
-  success: 'спасибо, скоро с Вами свяжемся',
-  fail: 'что-то пошло не так...'
+  loading: "icons/spinner.svg",
+  success: "спасибо, скоро с Вами свяжемся",
+  fail: "что-то пошло не так...",
 };
 
-
-
-
-
-function postData(form){
-  form.addEventListener('submit', (e) => {
+function postData(form) {
+  form.addEventListener("submit", (e) => {
     event.preventDefault();
 
-    const statusMessage = document.createElement('div');
-    statusMessage.classList.add('status');
-    statusMessage.textContent = message.loading;
-    form.append(statusMessage);
+    const statusMessage = document.createElement("img");
+    statusMessage.src = message.loading;
+    statusMessage.style.cssText = `
+    display: block;
+    margin: 0 auto;
+    `;
+    form.insertAdjacentElement('afterend',statusMessage);
 
     const request = new XMLHttpRequest();
-    request.open('POST', 'server.php');
+    request.open("POST", "server.php");
 
-    request.setRequestHeader('Content-type', 'application/json');
+    request.setRequestHeader("Content-type", "application/json");
     const formData = new FormData(form);
 
     const object = {};
@@ -230,24 +231,41 @@ function postData(form){
     const json = JSON.stringify(object);
     request.send(json);
 
-
-
-    request.addEventListener('load', () => {
+    request.addEventListener("load", () => {
       if (request.status === 200) {
         console.log(request.response);
-        statusMessage.textContent = message.success;
+        showThanksModal(message.success);
         form.reset();
-        setTimeout(() => {
-          statusMessage.remove();
-        }, 2000);
+        statusMessage.remove();
       } else {
-        statusMessage.textContent = message.fail;
+        showThanksModal(message.fail);
       }
     });
-
   });
 }
 
-forms.forEach(element => {
+forms.forEach((element) => {
   postData(element);
 });
+
+const showThanksModal = (message) => {
+  const prevModalDialog = document.querySelector(".modal__dialog");
+
+  prevModalDialog.classList.add("hide");
+  prevModalDialog.classList.remove("show");
+  openModalFunc();
+
+  const thanksModal = document.createElement("div");
+  thanksModal.classList.add("modal__dialog");
+  thanksModal.innerHTML = `
+    <div class="modal__content">
+    <div data-close="" class="modal__close">×</div>
+    <div class="modal__title">${message}</div>
+    </div>`;
+  document.querySelector(".modal").append(thanksModal);
+  setTimeout(() => {
+    thanksModal.remove();
+    prevModalDialog.classList.add("show");
+    prevModalDialog.classList.remove("hide");
+  }, 4000);
+};
