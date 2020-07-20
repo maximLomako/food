@@ -184,31 +184,31 @@ const getResource = async (url) => {
 //   });
 // });
 
-// axios.get("http://localhost:3000/menu").then((data) => {
-//   data.data.forEach(({ img, altimg, title, descr, price }) => {
-//     new MenuCard(img, altimg, title, descr, price, ".menu .container").render();
-//   });
-// });
-
 // getResource("http://localhost:3000/menu").then((data) => createCard(data));
 
-// function createCard(data) {
-//   data.forEach(({ img, altimg, title, descr, price }) => {
-//     const element = document.createElement("div");
-//     element.classList.add("menu__item");
-//     element.innerHTML = `
-//       <img src=${img} alt=${altimg}>
-//       <h3 class="menu__item-subtitle">${title}</h3>
-//       <div class="menu__item-descr">${descr}</div>
-//       <div class="menu__item-divider"></div>
-//       <div class="menu__item-price">
-//       <div class="menu__item-cost">Цена:</div>
-//       <div class="menu__item-total"><span>${price}</span> грн/день</div>
-//       </div>
-//     `;
-//     document.querySelector(".menu .container").append(element);
-//   });
-// }
+axios.get("http://localhost:3000/menu").then((data) => {
+  data.data.forEach(({ img, altimg, title, descr, price }) => {
+    new MenuCard(img, altimg, title, descr, price, ".menu .container").render();
+  });
+});
+
+function createCard(data) {
+  data.forEach(({ img, altimg, title, descr, price }) => {
+    const element = document.createElement("div");
+    element.classList.add("menu__item");
+    element.innerHTML = `
+      <img src=${img} alt=${altimg}>
+      <h3 class="menu__item-subtitle">${title}</h3>
+      <div class="menu__item-descr">${descr}</div>
+      <div class="menu__item-divider"></div>
+      <div class="menu__item-price">
+      <div class="menu__item-cost">Цена:</div>
+      <div class="menu__item-total"><span>${price}</span> грн/день</div>
+      </div>
+    `;
+    document.querySelector(".menu .container").append(element);
+  });
+}
 
 // Form
 const forms = document.querySelectorAll("form");
@@ -292,3 +292,59 @@ const showThanksModal = (message) => {
 fetch("http://localhost:3000/menu")
   .then((data) => data.json())
   .then((res) => console.log(res));
+
+// slider
+const slides = document.querySelectorAll(".offer__slide"),
+  prev = document.querySelector(".offer__slider-prev"),
+  next = document.querySelector(".offer__slider-next"),
+  currentNum = document.querySelector('#current'),
+  totalNum = document.querySelector('#total');
+let slideIndex = 1;
+
+const showSlides = (n) => {
+  if (n > slides.length) {
+    slideIndex = 1;
+  }
+
+  if (n < 1) {
+    slideIndex = slides.length;
+  }
+
+  slides.forEach((element, index) => {
+    element.classList.add("hide");
+    element.classList.remove("show");
+  });
+
+  slides[slideIndex - 1].classList.add("show");
+  slides[slideIndex - 1].classList.remove("hide");
+
+  if (slideIndex <= 9) {
+    currentNum.textContent = `0${slideIndex}`;
+  } else {
+    currentNum.textContent = `${slideIndex}`;
+  }
+};
+
+showSlides(slideIndex);
+
+if (slideIndex <= 9) {
+  totalNum.textContent = `0${slides.length}`;
+} else {
+  totalNum.textContent = `${slides.length}`;
+}
+
+
+
+const plusSlides = (n) => {
+    showSlides(slideIndex += n);
+};
+
+prev.addEventListener('click', () => {
+  plusSlides(-1);
+});
+
+next.addEventListener('click', () => {
+  plusSlides(1);
+});
+
+
