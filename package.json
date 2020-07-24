@@ -17,6 +17,10 @@
   },
   "homepage": "https://github.com/maximLomako/food#readme",
   "devDependencies": {
-    "json-server": "^0.16.1"
+    "json-server": "^0.16.1",
+    "webpack": "github:webpack/webpack"
+  },
+  "dependencies": {
+    "webpack-cli": "^3.3.12"
   }
 }
