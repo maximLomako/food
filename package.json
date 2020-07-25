@@ -16,11 +16,20 @@
     "url": "https://github.com/maximLomako/food/issues"
   },
   "homepage": "https://github.com/maximLomako/food#readme",
+  "browsersList": [
+    ">1"
+  ],
   "devDependencies": {
+    "@babel/cli": "^7.10.5",
+    "@babel/core": "^7.10.5",
+    "@babel/preset-env": "^7.10.4",
+    "babel-loader": "^8.1.0",
+    "core-js": "^3.6.5",
     "json-server": "^0.16.1",
     "webpack": "github:webpack/webpack"
   },
   "dependencies": {
+    "@babel/polyfill": "^7.10.4",
     "webpack-cli": "^3.3.12"
   }
 }
